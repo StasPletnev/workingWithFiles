@@ -1,23 +1,22 @@
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.Scanner;
 
 
 public class Main {
     public static Scanner scanner = new Scanner(System.in);
 
-    public static void main(String[] args) throws IOException {
-        File textFile = new File("basket.txt");
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        File binFile = new File("basket.bin");
         String[] products = new String[]{"Молоко", "Хлеб", "Хлопья", "Вода", "Чипсы"};
         Basket basket = new Basket(products, new int[]{80, 21, 120, 30, 200}, new int[products.length], new boolean[products.length]);
-        if (textFile.exists()) {
-            basket = Basket.loadFromTxtFile(textFile);
+        if (binFile.exists()) {
+            basket = Basket.loadFromBinFile(binFile);
             System.out.println("Была восстановлена старая корзина");
             basket.getProducts();
-            menu(basket, textFile);
+            menu(basket, binFile);
         } else {
             basket.getProducts();
-            menu(basket, textFile);
+            menu(basket, binFile);
         }
     }
 
@@ -35,7 +34,7 @@ public class Main {
                 int product = Integer.parseInt(parts[0]);
                 int sum = Integer.parseInt(parts[1]);
                 basket.addToCart(product, sum);
-                basket.saveTxt(textFile);
+                basket.saveBin(textFile);
             }
         }
     }

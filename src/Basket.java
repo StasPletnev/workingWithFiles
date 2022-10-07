@@ -1,6 +1,6 @@
 import java.io.*;
 
-public class Basket {
+public class Basket implements Serializable {
     protected String[] products;
     protected int[] prices;
     protected int[] basket;
@@ -72,6 +72,22 @@ public class Basket {
                 isFilled[i] = Boolean.parseBoolean(isFilledStr[i]);
             }
             return new Basket(products, prices, basket, isFilled);
+        }
+    }
+
+    public void saveBin(File file) throws IOException {
+        try (
+                ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
+        ) {
+            out.writeObject(this);
+        }
+    }
+
+    public static Basket loadFromBinFile(File file) throws IOException, ClassNotFoundException {
+        try (
+                ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))
+        ) {
+            return (Basket) in.readObject();
         }
     }
 
