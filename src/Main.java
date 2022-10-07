@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 public class Main {
     public static Scanner scanner = new Scanner(System.in);
+
     public static void main(String[] args) throws IOException {
         File textFile = new File("basket.txt");
         String[] products = new String[]{"Молоко", "Хлеб", "Хлопья", "Вода", "Чипсы"};
@@ -27,7 +28,7 @@ public class Main {
             String input = scanner.nextLine();
             if (input.equals("end")) {
                 break;
-            } else if(input.equals("basket")){
+            } else if (input.equals("basket")) {
                 basket.printCart();
             } else {
                 String[] parts = input.split(" ");
