@@ -1,27 +1,34 @@
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
+
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
 
 public class Main {
-    public static Scanner scanner = new Scanner(System.in);
+    protected static Scanner scanner = new Scanner(System.in);
+    protected static String[] products = new String[]{"Молоко", "Хлеб", "Хлопья", "Вода", "Чипсы"};
+    protected static long[] prices = new long[]{80, 21, 120, 30, 200};
+    protected static long[] basketNum = new long[products.length];
+    protected static boolean[] trueOrFalse = new boolean[products.length];
 
-    public static void main(String[] args) throws IOException {
-        File textFile = new File("basket.txt");
-        String[] products = new String[]{"Молоко", "Хлеб", "Хлопья", "Вода", "Чипсы"};
-        Basket basket = new Basket(products, new int[]{80, 21, 120, 30, 200}, new int[products.length], new boolean[products.length]);
+    public static void main(String[] args) throws IOException, ParseException {
+        File textFile = new File("basket.json");
+        Basket basket = new Basket(products, prices, basketNum, trueOrFalse);
         if (textFile.exists()) {
-            basket = Basket.loadFromTxtFile(textFile);
+            basket = Basket.loadJSON();
             System.out.println("Была восстановлена старая корзина");
             basket.getProducts();
-            menu(basket, textFile);
+            menu(basket);
         } else {
             basket.getProducts();
-            menu(basket, textFile);
+            menu(basket);
         }
     }
 
-    public static void menu(Basket basket, File textFile) throws IOException {
+    public static void menu(Basket basket) throws IOException {
         while (true) {
             System.out.println("Введите basket для просмотра корзины или end для выхода из программы.");
             System.out.println("Введите номер товара и его количество:");
@@ -35,8 +42,12 @@ public class Main {
                 int product = Integer.parseInt(parts[0]);
                 int sum = Integer.parseInt(parts[1]);
                 basket.addToCart(product, sum);
-                basket.saveTxt(textFile);
+
+                basket.saveJSON();
+                ClientLog.log(product, sum);
             }
         }
     }
+
+
 }

@@ -1,12 +1,20 @@
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.SortedMap;
 
 public class Basket {
     protected String[] products;
-    protected int[] prices;
-    protected int[] basket;
+    protected long[] prices;
+    protected long[] basket;
     protected boolean[] isFilled;
 
-    public Basket(String[] products, int[] prices, int[] basket, boolean[] isFilled) {
+    public Basket(String[] products, long[] prices, long[] basket, boolean[] isFilled) {
         this.products = products;
         this.prices = prices;
         this.basket = basket;
@@ -39,11 +47,11 @@ public class Basket {
                 out.print(p + " ");
             }
             out.println();
-            for (int pr : prices) {
+            for (long pr : prices) {
                 out.print(pr + " ");
             }
             out.println();
-            for (int b : basket) {
+            for (long b : basket) {
                 out.print(b + " ");
             }
             out.println();
@@ -53,16 +61,87 @@ public class Basket {
         }
     }
 
+    public void saveJSON() throws IOException {
+        JSONObject object = new JSONObject();
+        JSONArray listProd = new JSONArray();
+        for (String product :
+                products) {
+            listProd.add(product);
+        }
+        object.put("products", listProd);
+
+        JSONArray listPrices = new JSONArray();
+        for (long price :
+                prices) {
+            listPrices.add(price);
+        }
+        object.put("prices", listPrices);
+
+        JSONArray listBasket = new JSONArray();
+        for (long bask :
+                basket) {
+            listBasket.add(bask);
+        }
+        object.put("basket", listBasket);
+
+        JSONArray listIsFilled = new JSONArray();
+        for (boolean fill :
+                isFilled) {
+            listIsFilled.add(fill);
+        }
+        object.put("trueOrFalse", listIsFilled);
+
+        try (FileWriter file = new FileWriter("basket.json")) {
+            file.write(object.toJSONString());
+        }
+    }
+
+    public static Basket loadJSON() throws ParseException, IOException {
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(new FileReader("basket.json"));
+        JSONObject jsonObject = (JSONObject) obj;
+
+        JSONArray products = (JSONArray) jsonObject.get("products");
+        ArrayList<String> productsArr = (ArrayList<String>) products;
+        String[] productsStr = new String[productsArr.toArray().length];
+        for (int i = 0; i < productsStr.length; i++) {
+            productsStr[i] = productsArr.get(i);
+        }
+
+        JSONArray prices = (JSONArray) jsonObject.get("prices");
+        ArrayList<Long> pricesArr = (ArrayList<Long>) prices;
+        long[] pricesInt = new long[pricesArr.toArray().length];
+        for (int i = 0; i < pricesInt.length; i++) {
+            pricesInt[i] = pricesArr.get(i);
+        }
+
+        JSONArray basket = (JSONArray) jsonObject.get("basket");
+        ArrayList<Long> basketArr = (ArrayList<Long>) basket;
+        long[] basketInt = new long[basketArr.toArray().length];
+        for (int i = 0; i < basketInt.length; i++) {
+            basketInt[i] = basketArr.get(i);
+        }
+
+        JSONArray isFilled = (JSONArray) jsonObject.get("trueOrFalse");
+        ArrayList<Boolean> isFilledArr = (ArrayList<Boolean>) isFilled;
+        boolean[] isFilledBool = new boolean[isFilledArr.toArray().length];
+        for (int i = 0; i < isFilledBool.length; i++) {
+            isFilledBool[i] = isFilledArr.get(i);
+        }
+        return new Basket(productsStr, pricesInt, basketInt, isFilledBool);
+
+    }
+
     public static Basket loadFromTxtFile(File textFile) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(textFile))) {
             String[] products = reader.readLine().split(" ");
             String[] pricesStr = reader.readLine().trim().split(" ");
-            int[] prices = new int[pricesStr.length];
+            long[] prices = new long[pricesStr.length];
             for (int i = 0; i < prices.length; i++) {
                 prices[i] = Integer.parseInt(pricesStr[i]);
             }
             String[] basketStr = reader.readLine().trim().split(" ");
-            int[] basket = new int[basketStr.length];
+            long[] basket = new long[basketStr.length];
             for (int i = 0; i < basket.length; i++) {
                 basket[i] = Integer.parseInt(basketStr[i]);
             }
