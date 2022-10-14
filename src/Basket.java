@@ -5,8 +5,6 @@ import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.SortedMap;
 
 public class Basket {
     protected String[] products;
@@ -61,7 +59,7 @@ public class Basket {
         }
     }
 
-    public void saveJSON() throws IOException {
+    public void saveJSON(File forSave) throws IOException {
         JSONObject object = new JSONObject();
         JSONArray listProd = new JSONArray();
         for (String product :
@@ -91,14 +89,14 @@ public class Basket {
         }
         object.put("trueOrFalse", listIsFilled);
 
-        try (FileWriter file = new FileWriter("basket.json")) {
+        try (FileWriter file = new FileWriter(String.valueOf(forSave))) {
             file.write(object.toJSONString());
         }
     }
 
-    public static Basket loadJSON() throws ParseException, IOException {
+    public static Basket loadJSON(String nameFile) throws ParseException, IOException {
         JSONParser parser = new JSONParser();
-        Object obj = parser.parse(new FileReader("basket.json"));
+        Object obj = parser.parse(new FileReader(nameFile));
         JSONObject jsonObject = (JSONObject) obj;
 
         JSONArray products = (JSONArray) jsonObject.get("products");
