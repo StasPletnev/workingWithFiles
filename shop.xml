@@ -7,7 +7,7 @@
     </load>
 
     <save>
-        <enabled>true</enabled>
+        <enabled>false</enabled>
         <fileName>basket.json</fileName>
         <format>json</format>
     </save>

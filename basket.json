@@ -1,1 +1,30 @@
-{"basket":[22,22,5,0,0],"prices":[80,21,120,30,200],"trueOrFalse":[true,true,true,false,false],"products":["Молоко","Хлеб","Хлопья","Вода","Чипсы"]}
+{
+  "products": [
+    "Молоко",
+    "Хлеб",
+    "Хлопья",
+    "Вода",
+    "Чипсы"
+  ],
+  "prices": [
+    80,
+    21,
+    120,
+    30,
+    200
+  ],
+  "basket": [
+    2,
+    2,
+    0,
+    0,
+    0
+  ],
+  "isFilled": [
+    true,
+    true,
+    false,
+    false,
+    false
+  ]
+}

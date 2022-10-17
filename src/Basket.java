@@ -1,3 +1,5 @@
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -60,74 +62,16 @@ public class Basket {
     }
 
     public void saveJSON(File forSave) throws IOException {
-        JSONObject object = new JSONObject();
-        JSONArray listProd = new JSONArray();
-        for (String product :
-                products) {
-            listProd.add(product);
-        }
-        object.put("products", listProd);
-
-        JSONArray listPrices = new JSONArray();
-        for (long price :
-                prices) {
-            listPrices.add(price);
-        }
-        object.put("prices", listPrices);
-
-        JSONArray listBasket = new JSONArray();
-        for (long bask :
-                basket) {
-            listBasket.add(bask);
-        }
-        object.put("basket", listBasket);
-
-        JSONArray listIsFilled = new JSONArray();
-        for (boolean fill :
-                isFilled) {
-            listIsFilled.add(fill);
-        }
-        object.put("trueOrFalse", listIsFilled);
-
+        Gson gson = new Gson();
         try (FileWriter file = new FileWriter(String.valueOf(forSave))) {
-            file.write(object.toJSONString());
+            file.write(gson.toJson(this));
         }
     }
 
-    public static Basket loadJSON(String nameFile) throws ParseException, IOException {
-        JSONParser parser = new JSONParser();
-        Object obj = parser.parse(new FileReader(nameFile));
-        JSONObject jsonObject = (JSONObject) obj;
-
-        JSONArray products = (JSONArray) jsonObject.get("products");
-        ArrayList<String> productsArr = (ArrayList<String>) products;
-        String[] productsStr = new String[productsArr.toArray().length];
-        for (int i = 0; i < productsStr.length; i++) {
-            productsStr[i] = productsArr.get(i);
-        }
-
-        JSONArray prices = (JSONArray) jsonObject.get("prices");
-        ArrayList<Long> pricesArr = (ArrayList<Long>) prices;
-        long[] pricesInt = new long[pricesArr.toArray().length];
-        for (int i = 0; i < pricesInt.length; i++) {
-            pricesInt[i] = pricesArr.get(i);
-        }
-
-        JSONArray basket = (JSONArray) jsonObject.get("basket");
-        ArrayList<Long> basketArr = (ArrayList<Long>) basket;
-        long[] basketInt = new long[basketArr.toArray().length];
-        for (int i = 0; i < basketInt.length; i++) {
-            basketInt[i] = basketArr.get(i);
-        }
-
-        JSONArray isFilled = (JSONArray) jsonObject.get("trueOrFalse");
-        ArrayList<Boolean> isFilledArr = (ArrayList<Boolean>) isFilled;
-        boolean[] isFilledBool = new boolean[isFilledArr.toArray().length];
-        for (int i = 0; i < isFilledBool.length; i++) {
-            isFilledBool[i] = isFilledArr.get(i);
-        }
-        return new Basket(productsStr, pricesInt, basketInt, isFilledBool);
-
+    public static Basket loadJSON(String nameFile) throws FileNotFoundException {
+        Gson gson = new Gson();
+        JsonReader reader = new JsonReader(new FileReader(nameFile));
+        return gson.fromJson(reader, Basket.class);
     }
 
     public static Basket loadFromTxtFile(File textFile) throws IOException {
